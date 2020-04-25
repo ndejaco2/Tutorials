@@ -16,7 +16,7 @@ class Product:
         return {'ASIN' : { 'S' : self.asin}, 'TimeStamp' : {'N' : self.timestamp}, 'Price' : {'N' : self.price}}
 
     @staticmethod
-    def getAttributeDefs():
+    def getKeyAttributeDefs():
         return [{'AttributeName' : 'ASIN', 'AttributeType' : 'S'}, {'AttributeName' : 'TimeStamp', 'AttributeType' : 'N'}]
 
     @staticmethod
@@ -35,7 +35,7 @@ def putItem(tableName, product):
 
 def createTable(tableName):
     try:
-        response = client.create_table(AttributeDefinitions=Product.getAttributeDefs(), TableName=tableName, KeySchema=Product.getKeySchema(), BillingMode='PAY_PER_REQUEST')
+        response = client.create_table(AttributeDefinitions=Product.getKeyAttributeDefs(), TableName=tableName, KeySchema=Product.getKeySchema(), BillingMode='PAY_PER_REQUEST')
         responseDict = dict(response)
         print("Successfully created table " + responseDict['TableDescription']['TableName'])
         return True
@@ -59,14 +59,12 @@ def ensureTableDeleted(tableName):
 
 def ensureTableActive(tableName):
     while True:
-        try:
-            response = client.describe_table(TableName=tableName)
-            responseDict = dict(response)
-            if responseDict['Table']['TableStatus'] == 'ACTIVE':
-                break
-            time.sleep(1)
-        except Exception as e:
+        response = client.describe_table(TableName=tableName)
+        responseDict = dict(response)
+        if responseDict['Table']['TableStatus'] == 'ACTIVE':
             break
+        time.sleep(1)
+
 
 def dynamoDbTutorial():
     print("Starting tutorial")
