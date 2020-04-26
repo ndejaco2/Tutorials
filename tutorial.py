@@ -4,7 +4,6 @@ import random
 import string
 import calendar
 
-client = boto3.client('dynamodb')
 
 class Product:
     def __init__(self, asin, timestamp, price):
@@ -13,15 +12,15 @@ class Product:
         self.price = price
 
     def getItem(self):
-        return {'ASIN' : { 'S' : self.asin}, 'TimeStamp' : {'N' : self.timestamp}, 'Price' : {'N' : self.price}}
+        return {'ASIN': {'S': self.asin}, 'TimeStamp': {'N': self.timestamp}, 'Price': {'N': self.price}}
 
     @staticmethod
     def getKeyAttributeDefs():
-        return [{'AttributeName' : 'ASIN', 'AttributeType' : 'S'}, {'AttributeName' : 'TimeStamp', 'AttributeType' : 'N'}]
+        return [{'AttributeName': 'ASIN', 'AttributeType': 'S'}, {'AttributeName': 'TimeStamp', 'AttributeType': 'N'}]
 
     @staticmethod
     def getKeySchema():
-        return [{'AttributeName' : 'ASIN', 'KeyType' : 'HASH'}, {'AttributeName' : 'TimeStamp', 'KeyType' : 'RANGE'}]
+        return [{'AttributeName': 'ASIN', 'KeyType': 'HASH'}, {'AttributeName': 'TimeStamp', 'KeyType': 'RANGE'}]
 
 
 def putItem(tableName, product):
@@ -33,9 +32,11 @@ def putItem(tableName, product):
         print(e)
         return False
 
+
 def createTable(tableName):
     try:
-        response = client.create_table(AttributeDefinitions=Product.getKeyAttributeDefs(), TableName=tableName, KeySchema=Product.getKeySchema(), BillingMode='PAY_PER_REQUEST')
+        response = client.create_table(AttributeDefinitions=Product.getKeyAttributeDefs(), TableName=tableName,
+                                       KeySchema=Product.getKeySchema(), BillingMode='PAY_PER_REQUEST')
         responseDict = dict(response)
         print("Successfully created table " + responseDict['TableDescription']['TableName'])
         return True
@@ -43,11 +44,13 @@ def createTable(tableName):
         print(e)
         return False
 
+
 def deleteTable(tableName):
     try:
         response = client.delete_table(TableName=tableName)
     except Exception as e:
         print(e)
+
 
 def ensureTableDeleted(tableName):
     while True:
@@ -56,6 +59,7 @@ def ensureTableDeleted(tableName):
             time.sleep(2)
         except Exception as e:
             break
+
 
 def ensureTableActive(tableName):
     while True:
@@ -86,4 +90,8 @@ def dynamoDbTutorial():
         print("Error while inserting an item into the table, please consult the log")
         return
 
+
 dynamoDbTutorial()
+
+if __name__ == "__main__":
+    client = boto3.client(service_name='dynamodb', region_name='us-east-2')
