@@ -91,7 +91,8 @@ def dynamoDbTutorial():
         return
 
 
-dynamoDbTutorial()
+client = boto3.client(service_name='dynamodb')
+
 
 if __name__ == "__main__":
-    client = boto3.client(service_name='dynamodb', region_name='us-east-2')
+    dynamoDbTutorial()
