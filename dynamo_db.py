@@ -9,12 +9,25 @@ from product import Product
 
 
 class DynamoDBProduct(Product):
+    """
+    Save product data into dynamo db
+
+    :param table_name: name of table, set to :code:`"Products"`
+    :type table_name: str
+    :param client: aws client, set as dynamodb
+    :type client: boto3.client
+
+
+    .. todo::
+        should we have a table class instead?
+    """
     def __init__(self, *args):
         Product.__init__(self, *args)
         self.table_name = "Products"
         self.client = boto3.client(service_name='dynamodb')
 
     def putItem(self):
+        """Save table in dynamo db?. Print response"""
         try:
             response = self.client.put_item(TableName=self.table_name, Item=self.getItem(),
                                             ReturnConsumedCapacity='TOTAL')
@@ -25,6 +38,7 @@ class DynamoDBProduct(Product):
             return False
 
     def createTable(self):
+        """Create table"""
         try:
             response = self.client.create_table(AttributeDefinitions=Product.getKeyAttributeDefs(),
                                                 TableName=self.table_name,
@@ -37,6 +51,7 @@ class DynamoDBProduct(Product):
             return False
 
     def deleteTable(self):
+        """Delete table"""
         try:
             response = self.client.delete_table(TableName=self.table_name)
         except Exception as e:
@@ -60,6 +75,7 @@ class DynamoDBProduct(Product):
 
 
 def dynamoDbTutorial():
+    """Tutorial workflow for dynamo db"""
     print("Starting tutorial")
     # Generate random asin and price using current unix timestamp for tutorial
     asin = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(10))

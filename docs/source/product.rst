@@ -1,0 +1,5 @@
+Product
+=======
+
+.. automodule:: product
+    :members:
