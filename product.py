@@ -19,7 +19,7 @@ class Product:
         """
         return {
             'ASIN': {'S': self.asin},
-            'TimeStamp': {'N': self.timestamp},
+            'timeStamp': {'N': self.timestamp},
             'Price': {'N': self.price}
         }
 
@@ -31,7 +31,7 @@ class Product:
         """
         return [
             {'AttributeName': 'ASIN', 'AttributeType': 'S'},
-            {'AttributeName': 'TimeStamp', 'AttributeType': 'N'}
+            {'AttributeName': 'timeStamp', 'AttributeType': 'N'}
         ]
 
     @staticmethod
@@ -42,5 +42,5 @@ class Product:
         """
         return [
             {'AttributeName': 'ASIN', 'KeyType': 'HASH'},
-            {'AttributeName': 'TimeStamp', 'KeyType': 'RANGE'}
+            {'AttributeName': 'timeStamp', 'KeyType': 'RANGE'}
         ]
